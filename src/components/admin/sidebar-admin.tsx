@@ -100,8 +100,7 @@ export default function SidebarAdmin() {
         </Link>
 
         <SidebarGroup className="text-white">
-          {/* <SidebarGroupLabel>Platform</SidebarGroupLabel> */}
-          <SidebarMenu>
+          <SidebarMenu className="space-y-4">
             {items.map((item) =>
               item.items ? (
                 <Collapsible
