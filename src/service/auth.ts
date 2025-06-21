@@ -3,9 +3,10 @@ import axios from "axios";
 export async function Login(data:any) {
   try {
     const response = await axios.post(`http://localhost:8000/simka/auth/login`, data,{
+      withCredentials: true,
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     })
 
     return response.data

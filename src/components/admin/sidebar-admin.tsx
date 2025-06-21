@@ -14,15 +14,26 @@ import {
   SidebarMenuSubItem,
 } from "../ui/sidebar";
 import {
-  ChevronRight,
-  Fullscreen,
   Home,
+  ShoppingBasket,
+  Fullscreen,
   Logs,
+  Users,
+  ShoppingCart,
   MessageCircle,
   Settings,
-  ShoppingBasket,
-  ShoppingCart,
-  Users,
+  User,
+  Building2,
+  Briefcase,
+  MapPin,
+  CalendarCheck,
+  Clock,
+  BadgeDollarSign,
+  Wallet,
+  FileText,
+  ChevronRight,
+  Database,
+  User2Icon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -32,6 +43,7 @@ import {
   CollapsibleTrigger,
 } from "../ui/collapsible";
 import Image from "next/image";
+import clsx from "clsx";
 
 export default function SidebarAdmin() {
   const pathname = usePathname();
@@ -41,53 +53,120 @@ export default function SidebarAdmin() {
       title: "Dashboard",
       url: `/admin`,
       icon: Home,
+      isActive: pathname === "/admin",
     },
     {
       title: "Data",
-      icon: ShoppingBasket,
+      icon: Database,
+      isActive:
+        pathname.startsWith("/admin/karyawan") ||
+        pathname.startsWith("/admin/departemen") ||
+        pathname.startsWith("/admin/jabatan") ||
+        pathname.startsWith("/admin/cabang") ||
+        pathname.startsWith("/admin/cuti") ||
+        pathname.startsWith("/admin/jam-kerja") ||
+        pathname.startsWith("/admin/jenis-tunjangan") ||
+        pathname.startsWith("/admin/gaji-pokok") ||
+        pathname.startsWith("/admin/tunjangan"),
       items: [
-        { title: "Karyawan", url: `/admin/karyawan` },
-        { title: "Departemen", url: `/admin/departemen` },
-        { title: "Jabatan", url: `/admin/jabatan` },
-        { title: "Cabang", url: `/admin/cabang` },
-        { title: "Cuti", url: `/admin/cuti` },
-        { title: "Jam Kerja", url: `/admin/jam-kerja` },
-        { title: "Jenis Tunjangan", url: `/admin/jenis-tunjangan` },
-        { title: "Gaji Pokok", url: `/admin/gaji-pokok` },
-        { title: "Tunjangan", url: `/admin/tunjangan` },
+        {
+          title: "Karyawan",
+          url: `/admin/karyawan`,
+          icon: User,
+          isActive: pathname === "/admin/karyawan",
+        },
+        {
+          title: "Departemen",
+          url: `/admin/departemen`,
+          icon: Building2,
+          isActive: pathname === "/admin/departemen",
+        },
+        {
+          title: "Jabatan",
+          url: `/admin/jabatan`,
+          icon: Briefcase,
+          isActive: pathname === "/admin/jabatan",
+        },
+        {
+          title: "Cabang",
+          url: `/admin/cabang`,
+          icon: MapPin,
+          isActive: pathname === "/admin/cabang",
+        },
+        {
+          title: "Cuti",
+          url: `/admin/cuti`,
+          icon: CalendarCheck,
+          isActive: pathname === "/admin/cuti",
+        },
+        {
+          title: "Jam Kerja",
+          url: `/admin/jam-kerja`,
+          icon: Clock,
+          isActive: pathname === "/admin/jam-kerja",
+        },
+        {
+          title: "Jenis Tunjangan",
+          url: `/admin/jenis-tunjangan`,
+          icon: BadgeDollarSign,
+          isActive: pathname === "/admin/jenis-tunjangan",
+        },
+        {
+          title: "Gaji Pokok",
+          url: `/admin/gaji-pokok`,
+          icon: Wallet,
+          isActive: pathname === "/admin/gaji-pokok",
+        },
+        {
+          title: "Tunjangan",
+          url: `/admin/tunjangan`,
+          icon: BadgeDollarSign,
+          isActive: pathname === "/admin/tunjangan",
+        },
       ],
     },
     {
       title: "Gaji Pokok",
       url: `/admin/gaji`,
-      icon: Fullscreen,
+      icon: Wallet,
+      isActive: pathname === "/admin/gaji",
+    },
+    {
+      title: "Akun",
+      url: `/admin/accounts`,
+      icon: User2Icon,
+      isActive: pathname === "/admin/accounts",
     },
     {
       title: "Monitoring Presensi",
       url: `/admin/monitoring`,
       icon: Logs,
+      isActive: pathname === "/admin/monitoring",
     },
     {
       title: "Pengajuan Absen",
       url: `/admin/pengajuan`,
       icon: Users,
-    },
-    {
-      title: "Pengaturan",
-      url: `/admin/pengaturan`,
-      icon: ShoppingCart,
+      isActive: pathname === "/admin/pengajuan",
     },
     {
       title: "Laporan",
-      icon: MessageCircle,
+      icon: FileText,
+      isActive: pathname.startsWith("/admin/laporan"),
       items: [
-        { title: "Presensi dan Gaji", url: `/admin/laporan/presensi-gaji` },
+        {
+          title: "Presensi dan Gaji",
+          url: `/admin/laporan/presensi-gaji`,
+          icon: FileText,
+          isActive: pathname === "/admin/laporan/presensi-gaji",
+        },
       ],
     },
     {
       title: "Utilities",
       url: `/admin/utilities`,
       icon: Settings,
+      isActive: pathname === "/admin/utilities",
     },
   ];
 
@@ -99,8 +178,8 @@ export default function SidebarAdmin() {
           <h1 className="text-xl font-bold text-white">SIMKA</h1>
         </Link>
 
-        <SidebarGroup className="text-white">
-          <SidebarMenu className="space-y-4">
+        <SidebarGroup>
+          <SidebarMenu className="space-y-4 text-white">
             {items.map((item) =>
               item.items ? (
                 <Collapsible
@@ -116,13 +195,22 @@ export default function SidebarAdmin() {
                         <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                       </SidebarMenuButton>
                     </CollapsibleTrigger>
-                    <CollapsibleContent >
-                      <SidebarMenuSub>
+                    <CollapsibleContent>
+                      <SidebarMenuSub className="space-y-2">
                         {item.items.map((subItem) => (
-                          <SidebarMenuSubItem key={subItem.title}>
-                            <SidebarMenuSubButton asChild>
+                          <SidebarMenuSubItem
+                            key={subItem.title}
+                            className="group/item"
+                          >
+                            <SidebarMenuSubButton
+                              asChild
+                              className={`text-white ${
+                                subItem.isActive ? "bg-white text-blue-950" : ""
+                              }`}
+                            >
                               <Link href={subItem.url}>
-                                <span className="text-white hover:text-blue-950">{subItem.title}</span>
+                                <subItem.icon />
+                                <span>{subItem.title}</span>
                               </Link>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
@@ -132,8 +220,14 @@ export default function SidebarAdmin() {
                   </SidebarMenuItem>
                 </Collapsible>
               ) : (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
+                <SidebarMenuItem key={item.title} className={`text-white`}>
+                  <SidebarMenuButton
+                    asChild
+                    tooltip={item.title}
+                    className={`${
+                      item.isActive ? "bg-white text-blue-950" : ""
+                    }`}
+                  >
                     <Link href={item.url}>
                       {item.icon && <item.icon />}
                       <span>{item.title}</span>
