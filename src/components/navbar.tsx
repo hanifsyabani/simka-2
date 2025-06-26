@@ -1,6 +1,8 @@
-import { LogOut, Search } from "lucide-react";
-import { Button } from "./ui/button";
+"use client";
+
+import { Search } from "lucide-react";
 import { Input } from "./ui/input";
+import LogoutComponent from "./auth/logout";
 
 export default function Navbar() {
   return (
@@ -11,9 +13,7 @@ export default function Navbar() {
         </div>
         <Input placeholder="Search..." className="border border-gray-400" />
       </div>
-      <Button>
-        <LogOut /> Sign Out
-      </Button>
+      <LogoutComponent />
     </div>
   );
 }

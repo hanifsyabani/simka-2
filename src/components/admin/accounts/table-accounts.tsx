@@ -1,21 +1,36 @@
-'use client'
+"use client";
 
-import { GetListAccounts } from "@/service/account"
-import { useQuery } from "@tanstack/react-query"
+import { GetListAccounts } from "@/service/account";
+import { useQuery } from "@tanstack/react-query";
+import { ColumnAccounts, getColumns } from "./columns-account";
+import { DataTable } from "@/components/ui/data-table";
 
 export default function TableAccounts() {
-
-
-  const {data: dataAccounts, isLoading: isLoadingAccounts} = useQuery({
+  const { data: dataAccounts, isLoading: isLoadingAccounts, refetch } = useQuery({
     queryFn: () => GetListAccounts(),
-    queryKey: ['dataAccounts'],
-  })
+    queryKey: ["dataAccounts"],
+  });
 
-  console.log(dataAccounts)
+  const formattedDataAccounts: ColumnAccounts[] = dataAccounts?.data?.user.map(
+    (account: any) => ({
+      id: account.id,
+      fullname: account.fullname,
+      email: account.email,
+      phone: account.phone,
+      role: account.role,
+      department: account.department,
+      position: account.position,
+      isVerified: account.isVerified,
+    })
+  );
 
-  if(isLoadingAccounts) return <div className="loader"/>
+  // console.log(formattedDataAccounts)
+
+  if (isLoadingAccounts) return <div className="loader-main" />;
 
   return (
-    <div>table-accounts</div>
-  )
+    <div>
+      <DataTable columns={getColumns(refetch)} data={formattedDataAccounts}  />
+    </div>
+  );
 }

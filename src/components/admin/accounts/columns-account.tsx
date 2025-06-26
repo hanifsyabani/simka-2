@@ -3,8 +3,10 @@
 import { ColumnDef } from "@tanstack/react-table";
 import ActionsAccount from "./actions";
 import { Badge } from "@/components/ui/badge";
+import { Verified } from "lucide-react";
 
-export type Accounts = {
+export type ColumnAccounts = {
+  id: string;
   fullname: number;
   email: string;
   role: string;
@@ -14,7 +16,7 @@ export type Accounts = {
   isVerified: boolean;
 };
 
-export const columns: ColumnDef<Accounts>[] = [
+export const getColumns = (refetch: () => void): ColumnDef<ColumnAccounts>[] => [
   {
     accessorKey: "fullname",
     header: "Nama Lengkap ",
@@ -40,16 +42,36 @@ export const columns: ColumnDef<Accounts>[] = [
     header: "Jabatan",
   },
   {
-    id: "actions",
+    id: "id",
     header: "Status",
     cell: ({ row }) => (
       <div>
         {row.original.isVerified ? (
-          <Badge className="text-white">Verified</Badge>
+          <Badge className="text-white bg-green-600">Terverifikasi</Badge>
         ) : (
-          <Badge variant="destructive" className="text-white">Not Verified</Badge>
+          <Badge variant="destructive" className="text-white bg-gray-600">
+            Tidak Terverifikasi
+          </Badge>
         )}
       </div>
     ),
   },
+  {
+    id: "actions",
+    header: "Aksi",
+    cell: ({ row }) => (
+      <>
+        {row.original.isVerified ? (
+          <h1>-</h1>
+        ) : (
+          <ActionsAccount
+            isVerified={row.original.isVerified}
+            userId={row.original.id}
+            refetch={refetch} 
+          />
+        )}
+      </>
+    ),
+  },
 ];
+

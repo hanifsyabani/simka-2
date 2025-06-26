@@ -1,20 +1,39 @@
-import axios from "axios"
-
+import axios from "axios";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export async function GetListAccounts(){
+export async function GetListAccounts() {
   try {
-    const response =await axios.get(`${API_URL}/accounts`, {
+    const response = await axios.get(`${API_URL}/accounts`, {
       withCredentials: true,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-    })
+    });
 
-    return response.data
-  } catch (error:any) {
-    throw new Error(error.response.data.message)
-    
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+}
+
+export async function ChangeStatusAccount(userid: string, newstatus: boolean) {
+  try {
+    const response = await axios.patch(
+      `${API_URL}/accounts/update-status-account/${userid}`,
+      {
+        status: newstatus,
+      },
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
   }
 }

@@ -142,7 +142,18 @@
   height: 20px;
   border-radius: 50%;
   display: inline-block;
-  border-top: 3px solid #FFF;
+  border-top: 3px solid #005eff;
+  border-right: 3px solid transparent;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+.loader-white {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-block;
+  border-top: 3px solid #ffffff;
   border-right: 3px solid transparent;
   box-sizing: border-box;
   animation: rotation 1s linear infinite;

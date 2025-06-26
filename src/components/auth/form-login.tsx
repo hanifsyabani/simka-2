@@ -160,7 +160,7 @@ export default function FormLogin() {
                 disabled={isLoading}
                 className="w-full bg-gradient-to-r from-blue-950 to-blue-800 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-900 hover:to-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 cursor-pointer"
               >
-                {isLoading ? <span className="loader" /> : "Masuk"}
+                {isLoading ? <span className="loader-white" /> : "Masuk"}
                 <ArrowRight className="w-5 h-5" />
               </Button>
               <div className="text-sm text-center">

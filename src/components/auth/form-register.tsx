@@ -408,11 +408,11 @@ export default function FormRegister() {
                     <Button
                       type="submit"
                       disabled={isLoading || !watchedAgreeTerms}
-                      className="flex-1 bg-gradient-to-r from-blue-950 to-blue-800 hover:from-blue-900 hover:to-blue-700 text-white disabled:opacity-50"
+                      className="flex-1 bg-gradient-to-r cursor-pointer from-blue-950 to-blue-800 hover:from-blue-900 hover:to-blue-700 text-white disabled:opacity-50"
                       size="lg"
                     >
                       <UserPlus className="w-5 h-5 mr-2" />
-                      {isLoading ? <span className="loader" /> : "Daftar"}
+                      {isLoading ? <span className="loader-white" /> : "Daftar"}
                     </Button>
                   </div>
                 </div>
