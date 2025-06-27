@@ -16,7 +16,9 @@ export type ColumnAccounts = {
   isVerified: boolean;
 };
 
-export const getColumns = (refetch: () => void): ColumnDef<ColumnAccounts>[] => [
+export const getColumns = (
+  refetch: () => void
+): ColumnDef<ColumnAccounts>[] => [
   {
     accessorKey: "fullname",
     header: "Nama Lengkap ",
@@ -61,17 +63,12 @@ export const getColumns = (refetch: () => void): ColumnDef<ColumnAccounts>[] => 
     header: "Aksi",
     cell: ({ row }) => (
       <>
-        {row.original.isVerified ? (
-          <h1>-</h1>
-        ) : (
-          <ActionsAccount
-            isVerified={row.original.isVerified}
-            userId={row.original.id}
-            refetch={refetch} 
-          />
-        )}
+        <ActionsAccount
+          isVerified={row.original.isVerified}
+          userId={row.original.id}
+          refetch={refetch}
+        />
       </>
     ),
   },
 ];
-

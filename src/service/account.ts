@@ -17,6 +17,40 @@ export async function GetListAccounts() {
   }
 }
 
+export async function GetAccount(userid: string) {
+  try {
+    const response = await axios.get(`${API_URL}/accounts/${userid}`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+}
+
+export async function EditAccount(userid: string, data: any) {
+  try {
+    const response = await axios.patch(
+      `${API_URL}/accounts/update-account/${userid}`,
+      data,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+}
+
 export async function ChangeStatusAccount(userid: string, newstatus: boolean) {
   try {
     const response = await axios.patch(

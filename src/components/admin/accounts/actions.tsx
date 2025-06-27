@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/dialog";
 import { ChangeStatusAccount } from "@/service/account";
 import { useMutation } from "@tanstack/react-query";
+import { Check, Edit, Trash } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Swal from "sweetalert2";
 
@@ -27,6 +29,7 @@ export default function ActionsAccount({
 }: ActionsAccountProps) {
   const [isOpenDialog, setIsOpenDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const { mutate: changeStatus } = useMutation({
     mutationFn: (newStatus: boolean) => ChangeStatusAccount(userId, newStatus),
@@ -60,22 +63,33 @@ export default function ActionsAccount({
 
   return (
     <>
-      <Button
-        className={`${
-          isVerified ? "bg-red-600" : "bg-green-600"
-        } text-white cursor-pointer`}
-        onClick={() => setIsOpenDialog(true)}
-      >
-        {isVerified ? "Batalkan Persetujuan" : "Setujui"}
-      </Button>
+      <div className="flex items-center gap-2">
+        <Button
+          className={`bg-green-600 text-white cursor-pointer`}
+          onClick={() => setIsOpenDialog(true)}
+          disabled={isVerified}
+        >
+          <Check />
+        </Button>
+        <Button
+          className="bg-blue-600 text-white cursor-pointer"
+          onClick={() => router.push(`/admin/accounts/${userId}`)}
+        >
+          <Edit />
+        </Button>
+        <Button
+          className="bg-red-600 text-white cursor-pointer"
+          onClick={() => setIsOpenDialog(true)}
+        >
+          <Trash />
+        </Button>
+      </div>
 
       <Dialog open={isOpenDialog} onOpenChange={setIsOpenDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {isVerified
-                ? "Batalkan Verifikasi Akun?"
-                : "Setujui Akun Ini?"}
+              {isVerified ? "Batalkan Verifikasi Akun?" : "Setujui Akun Ini?"}
             </DialogTitle>
             <DialogDescription>
               {isVerified
@@ -96,7 +110,7 @@ export default function ActionsAccount({
               onClick={handleConfirm}
               disabled={isLoading}
             >
-              {isLoading ? <span className="loader-white"/> : "Ya, Lanjutkan"}
+              {isLoading ? <span className="loader-white" /> : "Ya, Lanjutkan"}
             </Button>
           </DialogFooter>
         </DialogContent>

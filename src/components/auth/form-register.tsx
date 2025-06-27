@@ -34,6 +34,7 @@ import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { departments, positions } from "@/lib/items";
 
 const schema = z
   .object({
@@ -117,26 +118,6 @@ export default function FormRegister() {
     setIsLoading(true);
     registerUser(data);
   }
-
-  const departments = [
-    "Human Resources",
-    "Finance",
-    "Marketing",
-    "IT Department",
-    "Operations",
-    "Sales",
-    "Customer Service",
-  ];
-
-  const positions = [
-    "Manager",
-    "Supervisor",
-    "Staff",
-    "Coordinator",
-    "Analyst",
-    "Specialist",
-    "Assistant",
-  ];
 
   const getPasswordStrength = (password: string) => {
     if (!password) return 0;
