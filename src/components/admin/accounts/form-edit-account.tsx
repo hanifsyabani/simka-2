@@ -29,13 +29,12 @@ import {
   Shield,
   CheckCircle,
   XCircle,
-  MoveLeft,
   CircleChevronLeft,
 } from "lucide-react";
 import { departments, positions } from "@/lib/items";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { EditAccount, GetAccount } from "@/service/account";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
@@ -89,7 +88,7 @@ export default function FormEditAccount({ id }: { id: string }) {
     handleSubmit,
     formState: { errors },
     reset,
-    control,
+    watch,
     setValue,
   } = useForm<FormFields>({
     resolver: zodResolver(schema),
@@ -103,22 +102,28 @@ export default function FormEditAccount({ id }: { id: string }) {
     },
   });
 
+  // Populate form when data is loaded
   useEffect(() => {
     if (dataAccount?.data?.user && !isLoadingAccount) {
-      const user = dataAccount.data.user
-
-      reset({
-        fullname: user.fullname || "",
-        email: user.email || "",
-        phone: user.phone || "",
-        department: user.department || "",
-        position: user.position || "",
-        role: user.role === "admin" ? "admin" : "employee",
-      });
-
+      const user = dataAccount.data.user;
+      
+      setValue("fullname", user.fullname || "");
+      setValue("email", user.email || "");
+      setValue("phone", user.phone || "");
       setValue("department", user.department || "");
       setValue("position", user.position || "");
       setValue("role", user.role === "admin" ? "admin" : "employee");
+      
+      setTimeout(() => {
+        reset({
+          fullname: user.fullname || "",
+          email: user.email || "",
+          phone: user.phone || "",
+          department: user.department || "",
+          position: user.position || "",
+          role: user.role === "admin" ? "admin" : "employee",
+        });
+      }, 100);
     }
   }, [dataAccount, isLoadingAccount, reset, setValue]);
 
@@ -127,9 +132,12 @@ export default function FormEditAccount({ id }: { id: string }) {
     editAccount(data);
   }
 
+  const user = dataAccount?.data?.user;
   if (isLoadingAccount) return <div className="loader" />;
 
-  const user = dataAccount?.data?.user;
+  const watchedDepartment = watch("department");
+  const watchedPosition = watch("position");
+  const watchedRole = watch("role");
 
   return (
     <div className="mx-auto p-6 space-y-6">
@@ -145,10 +153,10 @@ export default function FormEditAccount({ id }: { id: string }) {
               </Link>
               <div>
                 <CardTitle className="text-2xl  font-bold text-gray-900">
-                  Edit User Account
+                  Edit Akun User
                 </CardTitle>
                 <CardDescription className="text-gray-600 mt-1">
-                  Update user information and account settings
+                  Update informasi akun pengguna
                 </CardDescription>
               </div>
             </div>
@@ -254,27 +262,26 @@ export default function FormEditAccount({ id }: { id: string }) {
                     Department
                   </Label>
 
-                  <Controller
-                    control={control}
-                    name="department"
-                    render={({ field }) => (
-                      <Select
-                        value={field.value ?? ""} 
-                        onValueChange={(value) => field.onChange(value || "")} 
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Pilih departemen" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {departments.map((dep) => (
-                            <SelectItem key={dep} value={dep}>
-                              {dep}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
+                  <Select
+                    value={watchedDepartment || ""}
+                    onValueChange={(value) => setValue("department", value, { shouldValidate: true, shouldDirty: true })}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Pilih departemen" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {departments.map((dep) => (
+                        <SelectItem key={dep} value={dep}>
+                          {dep}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.department && (
+                    <p className="text-sm text-red-600">
+                      {errors.department.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -286,27 +293,26 @@ export default function FormEditAccount({ id }: { id: string }) {
                     Position
                   </Label>
 
-                  <Controller
-                    control={control}
-                    name="position"
-                    render={({ field }) => (
-                      <Select
-                        value={field.value ?? ""} 
-                        onValueChange={(value) => field.onChange(value || "")}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Pilih jabatan" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {positions.map((pos) => (
-                            <SelectItem key={pos} value={pos}>
-                              {pos}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
+                  <Select
+                    value={watchedPosition || ""}
+                    onValueChange={(value) => setValue("position", value, { shouldValidate: true, shouldDirty: true })}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Pilih jabatan" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {positions.map((pos) => (
+                        <SelectItem key={pos} value={pos}>
+                          {pos}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.position && (
+                    <p className="text-sm text-red-600">
+                      {errors.position.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -327,24 +333,21 @@ export default function FormEditAccount({ id }: { id: string }) {
                   >
                     User Role *
                   </Label>
-                  <Controller
-                    control={control}
-                    name="role"
-                    render={({ field }) => (
-                      <Select
-                        value={field.value ?? ""} 
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-blue-500">
-                          <SelectValue placeholder="Select role" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="employee">Employee</SelectItem>
-                          <SelectItem value="admin">Admin</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
+
+                  <Select
+                    value={watchedRole || "employee"}
+                    onValueChange={(value) =>
+                      setValue("role", value as "employee" | "admin", { shouldValidate: true, shouldDirty: true })
+                    }
+                  >
+                    <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-blue-500">
+                      <SelectValue placeholder="Select role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="employee">Employee</SelectItem>
+                      <SelectItem value="admin">Admin</SelectItem>
+                    </SelectContent>
+                  </Select>
 
                   {errors.role && (
                     <p className="text-sm text-red-600">
@@ -381,7 +384,6 @@ export default function FormEditAccount({ id }: { id: string }) {
               </div>
             </div>
 
-            {/* Submit Button */}
             <div className="flex justify-end space-x-4 pt-4">
               <Button
                 type="button"
@@ -393,7 +395,7 @@ export default function FormEditAccount({ id }: { id: string }) {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="px-6 transition-all duration-200 bg-blue-950 hover:bg-blue-700 disabled:opacity-50"
+                className="px-6 transition-all duration-200 cursor-pointer bg-blue-950 hover:bg-blue-700 disabled:opacity-50"
               >
                 {isLoading ? (
                   <span className="loader-white" />

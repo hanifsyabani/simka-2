@@ -71,3 +71,21 @@ export async function ChangeStatusAccount(userid: string, newstatus: boolean) {
     throw new Error(error.response.data.message);
   }
 }
+
+export async function DeleteAccount(userid: string) {
+  try {
+    const response = await axios.delete(
+      `${API_URL}/accounts/delete-account/${userid}`,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response.data.message);
+  }
+}

@@ -15,6 +15,7 @@ import { Check, Edit, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Swal from "sweetalert2";
+import DialogAccount from "./dialog-account";
 
 interface ActionsAccountProps {
   isVerified: boolean;
@@ -28,45 +29,15 @@ export default function ActionsAccount({
   refetch,
 }: ActionsAccountProps) {
   const [isOpenDialog, setIsOpenDialog] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [task, setTask] = useState("");
   const router = useRouter();
-
-  const { mutate: changeStatus } = useMutation({
-    mutationFn: (newStatus: boolean) => ChangeStatusAccount(userId, newStatus),
-    onSuccess: (_, newStatus) => {
-      setIsLoading(false);
-      setIsOpenDialog(false);
-      Swal.fire({
-        icon: "success",
-        title: "Berhasil",
-        text: `Akun telah ${
-          newStatus ? "disetujui" : "dibatalkan verifikasinya"
-        }.`,
-      });
-      refetch();
-    },
-    onError: (error: any) => {
-      setIsLoading(false);
-      setIsOpenDialog(false);
-      Swal.fire({
-        icon: "error",
-        title: "Gagal Memperbarui Status",
-        text: error?.response?.data?.message || "Terjadi kesalahan.",
-      });
-    },
-  });
-
-  const handleConfirm = () => {
-    setIsLoading(true);
-    changeStatus(!isVerified);
-  };
 
   return (
     <>
       <div className="flex items-center gap-2">
         <Button
           className={`bg-green-600 text-white cursor-pointer`}
-          onClick={() => setIsOpenDialog(true)}
+          onClick={() => (setIsOpenDialog(true), setTask("changeStatus"))}
           disabled={isVerified}
         >
           <Check />
@@ -79,42 +50,20 @@ export default function ActionsAccount({
         </Button>
         <Button
           className="bg-red-600 text-white cursor-pointer"
-          onClick={() => setIsOpenDialog(true)}
+          onClick={() => (setIsOpenDialog(true), setTask("delete"))}
         >
           <Trash />
         </Button>
       </div>
 
-      <Dialog open={isOpenDialog} onOpenChange={setIsOpenDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {isVerified ? "Batalkan Verifikasi Akun?" : "Setujui Akun Ini?"}
-            </DialogTitle>
-            <DialogDescription>
-              {isVerified
-                ? "Akun ini akan dibatalkan verifikasinya dan tidak dapat login."
-                : "Akun ini akan disetujui dan diizinkan login."}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setIsOpenDialog(false)}
-              disabled={isLoading}
-            >
-              Batal
-            </Button>
-            <Button
-              className="bg-green-600 text-white cursor-pointer"
-              onClick={handleConfirm}
-              disabled={isLoading}
-            >
-              {isLoading ? <span className="loader-white" /> : "Ya, Lanjutkan"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DialogAccount
+        task={task}
+        isVerified={isVerified}
+        isOpenDialog={isOpenDialog}
+        setIsOpenDialog={setIsOpenDialog}
+        userId={userId}
+        refetch={refetch}
+      />
     </>
   );
 }
