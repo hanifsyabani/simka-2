@@ -44,9 +44,6 @@ import Link from "next/link";
 const schema = z.object({
   fullname: z.string().min(1, "Nama lengkap harus diisi"),
   email: z.string().email("Email tidak valid").min(1, "Email harus diisi"),
-  phone: z.string().optional(),
-  department: z.string().optional(),
-  position: z.string().optional(),
   role: z.enum(["employee", "admin"], {
     errorMap: () => ({ message: "Role harus dipilih" }),
   }),
@@ -95,9 +92,7 @@ export default function FormEditAccount({ id }: { id: string }) {
     defaultValues: {
       fullname: "",
       email: "",
-      phone: "",
-      department: "",
-      position: "",
+
       role: "employee",
     },
   });
@@ -106,21 +101,16 @@ export default function FormEditAccount({ id }: { id: string }) {
   useEffect(() => {
     if (dataAccount?.data?.user && !isLoadingAccount) {
       const user = dataAccount.data.user;
-      
+
       setValue("fullname", user.fullname || "");
       setValue("email", user.email || "");
-      setValue("phone", user.phone || "");
-      setValue("department", user.department || "");
-      setValue("position", user.position || "");
+
       setValue("role", user.role === "admin" ? "admin" : "employee");
-      
+
       setTimeout(() => {
         reset({
           fullname: user.fullname || "",
           email: user.email || "",
-          phone: user.phone || "",
-          department: user.department || "",
-          position: user.position || "",
           role: user.role === "admin" ? "admin" : "employee",
         });
       }, 100);
@@ -135,8 +125,6 @@ export default function FormEditAccount({ id }: { id: string }) {
   const user = dataAccount?.data?.user;
   if (isLoadingAccount) return <div className="loader" />;
 
-  const watchedDepartment = watch("department");
-  const watchedPosition = watch("position");
   const watchedRole = watch("role");
 
   return (
@@ -185,27 +173,6 @@ export default function FormEditAccount({ id }: { id: string }) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label
-                    htmlFor="fullname"
-                    className="text-sm font-medium text-gray-700"
-                  >
-                    Full Name *
-                  </Label>
-                  <Input
-                    id="fullname"
-                    type="text"
-                    {...register("fullname")}
-                    placeholder="Enter full name"
-                    className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
-                  />
-                  {errors.fullname && (
-                    <p className="text-sm text-red-600">
-                      {errors.fullname.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label
                     htmlFor="email"
                     className="text-sm font-medium text-gray-700 flex items-center gap-1"
                   >
@@ -222,95 +189,6 @@ export default function FormEditAccount({ id }: { id: string }) {
                   {errors.email && (
                     <p className="text-sm text-red-600">
                       {errors.email.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-2 mt-4">
-                <Label
-                  htmlFor="phone"
-                  className="text-sm font-medium text-gray-700 flex items-center gap-1"
-                >
-                  <Phone className="w-4 h-4" />
-                  Phone Number
-                </Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  {...register("phone")}
-                  placeholder="Enter phone number"
-                  className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-            </div>
-
-            <Separator />
-
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <Building className="w-5 h-5" />
-                Work Information
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="department"
-                    className="text-sm font-medium text-gray-700"
-                  >
-                    Department
-                  </Label>
-
-                  <Select
-                    value={watchedDepartment || ""}
-                    onValueChange={(value) => setValue("department", value, { shouldValidate: true, shouldDirty: true })}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Pilih departemen" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {departments.map((dep) => (
-                        <SelectItem key={dep} value={dep}>
-                          {dep}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.department && (
-                    <p className="text-sm text-red-600">
-                      {errors.department.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="position"
-                    className="text-sm font-medium text-gray-700 flex items-center gap-1"
-                  >
-                    <Briefcase className="w-4 h-4" />
-                    Position
-                  </Label>
-
-                  <Select
-                    value={watchedPosition || ""}
-                    onValueChange={(value) => setValue("position", value, { shouldValidate: true, shouldDirty: true })}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Pilih jabatan" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {positions.map((pos) => (
-                        <SelectItem key={pos} value={pos}>
-                          {pos}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.position && (
-                    <p className="text-sm text-red-600">
-                      {errors.position.message}
                     </p>
                   )}
                 </div>
@@ -337,7 +215,10 @@ export default function FormEditAccount({ id }: { id: string }) {
                   <Select
                     value={watchedRole || "employee"}
                     onValueChange={(value) =>
-                      setValue("role", value as "employee" | "admin", { shouldValidate: true, shouldDirty: true })
+                      setValue("role", value as "employee" | "admin", {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      })
                     }
                   >
                     <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-blue-500">

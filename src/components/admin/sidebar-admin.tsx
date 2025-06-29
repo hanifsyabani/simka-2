@@ -42,133 +42,13 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "../ui/collapsible";
-import Image from "next/image";
-import clsx from "clsx";
+
+import { getMenuItems } from "@/lib/items";
 
 export default function SidebarAdmin() {
   const pathname = usePathname();
 
-  const items = [
-    {
-      title: "Dashboard",
-      url: `/admin`,
-      icon: Home,
-      isActive: pathname === "/admin",
-    },
-    {
-      title: "Data",
-      icon: Database,
-      isActive:
-        pathname.startsWith("/admin/karyawan") ||
-        pathname.startsWith("/admin/departemen") ||
-        pathname.startsWith("/admin/jabatan") ||
-        pathname.startsWith("/admin/cabang") ||
-        pathname.startsWith("/admin/cuti") ||
-        pathname.startsWith("/admin/jam-kerja") ||
-        pathname.startsWith("/admin/jenis-tunjangan") ||
-        pathname.startsWith("/admin/gaji-pokok") ||
-        pathname.startsWith("/admin/tunjangan"),
-      items: [
-        {
-          title: "Karyawan",
-          url: `/admin/karyawan`,
-          icon: User,
-          isActive: pathname === "/admin/karyawan",
-        },
-        {
-          title: "Departemen",
-          url: `/admin/departemen`,
-          icon: Building2,
-          isActive: pathname === "/admin/departemen",
-        },
-        {
-          title: "Jabatan",
-          url: `/admin/jabatan`,
-          icon: Briefcase,
-          isActive: pathname === "/admin/jabatan",
-        },
-        {
-          title: "Cabang",
-          url: `/admin/cabang`,
-          icon: MapPin,
-          isActive: pathname === "/admin/cabang",
-        },
-        {
-          title: "Cuti",
-          url: `/admin/cuti`,
-          icon: CalendarCheck,
-          isActive: pathname === "/admin/cuti",
-        },
-        {
-          title: "Jam Kerja",
-          url: `/admin/jam-kerja`,
-          icon: Clock,
-          isActive: pathname === "/admin/jam-kerja",
-        },
-        {
-          title: "Jenis Tunjangan",
-          url: `/admin/jenis-tunjangan`,
-          icon: BadgeDollarSign,
-          isActive: pathname === "/admin/jenis-tunjangan",
-        },
-        {
-          title: "Gaji Pokok",
-          url: `/admin/gaji-pokok`,
-          icon: Wallet,
-          isActive: pathname === "/admin/gaji-pokok",
-        },
-        {
-          title: "Tunjangan",
-          url: `/admin/tunjangan`,
-          icon: BadgeDollarSign,
-          isActive: pathname === "/admin/tunjangan",
-        },
-      ],
-    },
-    {
-      title: "Gaji Pokok",
-      url: `/admin/gaji`,
-      icon: Wallet,
-      isActive: pathname === "/admin/gaji",
-    },
-    {
-      title: "Akun",
-      url: `/admin/accounts`,
-      icon: User2Icon,
-      isActive: pathname === "/admin/accounts",
-    },
-    {
-      title: "Monitoring Presensi",
-      url: `/admin/monitoring`,
-      icon: Logs,
-      isActive: pathname === "/admin/monitoring",
-    },
-    {
-      title: "Pengajuan Absen",
-      url: `/admin/pengajuan`,
-      icon: Users,
-      isActive: pathname === "/admin/pengajuan",
-    },
-    {
-      title: "Laporan",
-      icon: FileText,
-      isActive: pathname.startsWith("/admin/laporan"),
-      items: [
-        {
-          title: "Presensi dan Gaji",
-          url: `/admin/laporan/presensi-gaji`,
-          icon: FileText,
-          isActive: pathname === "/admin/laporan/presensi-gaji",
-        },
-      ],
-    },
-    {
-      title: "Utilities",
-      url: `/admin/utilities`,
-      icon: Settings,
-      isActive: pathname === "/admin/utilities",
-    },
-  ];
+ const items = getMenuItems(pathname);
 
   return (
     <Sidebar side="left">
