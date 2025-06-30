@@ -26,7 +26,7 @@ export default function TableKaryawan() {
     (karyawan: any) => ({
       id: karyawan.id,
       fullname: karyawan.fullname,
-      email: karyawan.email,
+      email: karyawan.user.email,
       phone: karyawan.phone,
       department: karyawan.department,
       position: karyawan.position,
@@ -39,7 +39,7 @@ export default function TableKaryawan() {
     <>
       <div className="flex items-center justify-between mb-4">
         <HeaderAdmin title="Karyawan" />
-        <Button className="bg-green-700" onClick={() => router.push("/admin/karyawan/add")}>
+        <Button className="bg-green-700 cursor-pointer" onClick={() => router.push("/admin/karyawan/add")}>
           <Plus /> Tambah Karyawan
         </Button>
       </div>

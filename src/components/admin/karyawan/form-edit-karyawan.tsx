@@ -40,7 +40,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { PostKaryawan } from "@/service/karyawan";
+import {
+  EditKaryawan,
+  GetKaryawanById,
+  PostKaryawan,
+} from "@/service/karyawan";
 import { GetAllCabang } from "@/service/cabang";
 
 const schema = z.object({
@@ -53,9 +57,14 @@ const schema = z.object({
 });
 type FormFields = z.infer<typeof schema>;
 
-export default function FormAddKaryawan() {
+export default function FormeEditKaryawan({ id }: { id: string }) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+  const { data: dataKaryawan, isLoading: isLoadingKaryawan } = useQuery({
+    queryFn: () => GetKaryawanById(id),
+    queryKey: ["dataKaryawanById", id],
+  });
 
   const { data: dataAccounts, isLoading: isLoadingAccounts } = useQuery({
     queryFn: () => GetListAccounts(),
@@ -72,17 +81,51 @@ export default function FormAddKaryawan() {
     handleSubmit,
     formState: { errors },
     setValue,
+    watch,
+    reset,
   } = useForm<FormFields>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      fullname: "",
+      phone: "",
+      department: "",
+      position: "",
+      userId: "",
+      branchId: "",
+    },
   });
 
-  const { mutate: addKaryawan } = useMutation({
-    mutationFn: (data: FormFields) => PostKaryawan(data),
+  useEffect(() => {
+    if (dataKaryawan?.data?.karyawan && !isLoadingKaryawan) {
+      const karyawan = dataKaryawan.data.karyawan;
+
+      setValue("fullname", karyawan.fullname || "");
+      setValue("phone", karyawan.phone);
+      setValue("department", karyawan.department || "");
+      setValue("position", karyawan.position || "");
+      setValue("userId", karyawan.userId || "");
+      setValue("branchId", karyawan.branchId || "");
+
+      setTimeout(() => {
+        reset({
+          fullname: karyawan.fullname || "",
+          phone: karyawan.phone || "",
+          department: karyawan.department || "",
+          position: karyawan.position || "",
+          userId: karyawan.userId || "",
+          branchId: karyawan.branchId || "",
+        });
+      }, 100);
+    }
+  }, [dataKaryawan, isLoadingKaryawan, reset, setValue]);
+
+  const { mutate: editKaryawan } = useMutation({
+    mutationFn: (data: FormFields) => EditKaryawan(id, data),
     onSuccess: () => {
       setIsLoading(false);
       Swal.fire({
         title: "Sukses",
-        text: "Karyawan berhasil ditambahkan",
+        text: "Karyawan berhasil diperbarui",
         icon: "success",
         confirmButtonText: "OK",
       });
@@ -93,7 +136,7 @@ export default function FormAddKaryawan() {
       setIsLoading(false);
       Swal.fire({
         title: "Error",
-        text: error.message || "Terjadi kesalahan saat menambahkan karyawan",
+        text: error.message || "Terjadi kesalahan saat mengedit karyawan",
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -102,10 +145,12 @@ export default function FormAddKaryawan() {
 
   function onSubmit(data: FormFields) {
     setIsLoading(true);
-    addKaryawan(data);
+    editKaryawan(data);
   }
 
-  if (isLoadingAccounts || isLoadingCabang) return <div className="loader-white" />;
+
+  if (isLoadingKaryawan || isLoadingCabang || isLoadingAccounts)
+    return <div className="loader-white" />;
 
   return (
     <div className="mx-auto p-6 space-y-6">
@@ -114,18 +159,18 @@ export default function FormAddKaryawan() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link
-                href={"/admin/karyawan"}
+                href={"/admin/accounts"}
                 className="text-blue-950 hover:underline"
               >
                 <CircleChevronLeft />
               </Link>
               <div>
                 <CardTitle className="text-2xl  font-bold text-gray-900">
-                  Tambah Karyawan
+                  Edit Karyawan
                 </CardTitle>
                 <CardDescription className="text-gray-600 mt-1">
-                  Isi form di bawah ini untuk menambahkan karyawan baru.
-                  Pastikan semua informasi yang diperlukan sudah lengkap.
+                  Edit informasi karyawan di sini. Pastikan semua data yang
+                  dimasukkan sudah benar.
                 </CardDescription>
               </div>
             </div>
@@ -187,7 +232,10 @@ export default function FormAddKaryawan() {
                 >
                   Akun
                 </Label>
-                <Select onValueChange={(value) => setValue("userId", value)}>
+                <Select
+                  value={watch("userId") || ""}
+                  onValueChange={(value) => setValue("userId", value)}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Pilih akun" />
                   </SelectTrigger>
@@ -226,6 +274,7 @@ export default function FormAddKaryawan() {
                   </Label>
 
                   <Select
+                    value={watch("department") || ""}
                     onValueChange={(value) => setValue("department", value)}
                   >
                     <SelectTrigger className="w-full">
@@ -256,6 +305,7 @@ export default function FormAddKaryawan() {
                   </Label>
 
                   <Select
+                    value={watch("position") || ""}
                     onValueChange={(value) => setValue("position", value)}
                   >
                     <SelectTrigger className="w-full">
@@ -286,6 +336,7 @@ export default function FormAddKaryawan() {
                   </Label>
 
                   <Select
+                    value={watch("branchId") || ""}
                     onValueChange={(value) => setValue("branchId", value)}
                   >
                     <SelectTrigger className="w-full">

@@ -1,29 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  Eye,
-  EyeOff,
-  Building2,
-  User,
-  Mail,
-  Lock,
-  Phone,
-  MapPin,
-  UserPlus,
-  ArrowRight,
-  CheckCircle,
-} from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, UserPlus } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import Credit from "../credit";
 import Link from "next/link";
@@ -34,11 +15,9 @@ import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { departments, positions } from "@/lib/items";
 
 const schema = z
   .object({
-    fullname: z.string().min(1, "Nama lengkap wajib diisi"),
     email: z.string().email("Email tidak valid"),
     password: z
       .string()
@@ -49,9 +28,6 @@ const schema = z
     confirmPassword: z
       .string()
       .min(8, "Konfirmasi password minimal 8 karakter"),
-    position: z.string().min(1, "Jabatan wajib dipilih"),
-    department: z.string().min(1, "Departemen wajib dipilih"),
-    phone: z.string().min(10, "Nomor telepon minimal 10 digit"),
     agreeTerms: z.boolean().refine((val) => val === true, {
       message: "Anda harus menyetujui syarat dan ketentuan",
     }),
@@ -79,18 +55,13 @@ export default function FormRegister() {
   } = useForm<FormFields>({
     resolver: zodResolver(schema),
     defaultValues: {
-      fullname: "",
       email: "",
       password: "",
       confirmPassword: "",
-      position: "",
-      department: "",
-      phone: "",
       agreeTerms: false,
     },
   });
 
-  const watchedPassword = watch("password");
   const watchedAgreeTerms = watch("agreeTerms");
 
   const { mutate: registerUser } = useMutation({
@@ -119,16 +90,6 @@ export default function FormRegister() {
     registerUser(data);
   }
 
-  const getPasswordStrength = (password: string) => {
-    if (!password) return 0;
-    let strength = 0;
-    if (password.length >= 8) strength++;
-    if (/[A-Z]/.test(password)) strength++;
-    if (/[0-9]/.test(password)) strength++;
-    return strength;
-  };
-
-  const passwordStrength = getPasswordStrength(watchedPassword || "");
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 flex items-center justify-center p-4">
@@ -161,27 +122,6 @@ export default function FormRegister() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="fullname" className="text-blue-950">
-                    Nama Lengkap *
-                  </Label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 w-5 h-5 z-10" />
-                    <Input
-                      id="fullname"
-                      type="text"
-                      {...register("fullname")}
-                      className="pl-11 bg-blue-50/30 border-blue-200 focus:border-blue-500 focus:ring-blue-500"
-                      placeholder="Masukkan nama lengkap"
-                    />
-                    {errors.fullname && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {errors.fullname.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="space-y-2">
                   <Label htmlFor="email" className="text-blue-950">
                     Email *
                   </Label>
@@ -202,78 +142,6 @@ export default function FormRegister() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-blue-950">
-                    Nomor Telepon *
-                  </Label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-400 w-5 h-5 z-10" />
-                    <Input
-                      id="phone"
-                      type="tel"
-                      {...register("phone")}
-                      className="pl-11 bg-blue-50/30 border-blue-200 focus:border-blue-500 focus:ring-blue-500"
-                      placeholder="08xx-xxxx-xxxx"
-                    />
-                    {errors.phone && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {errors.phone.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex w-full items-start space-x-4">
-                  <div className="space-y-2 w-1/2">
-                    <Label htmlFor="department" className="text-blue-950">
-                      Departemen *
-                    </Label>
-                    <Select
-                      onValueChange={(value) => setValue("department", value)}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Pilih departemen" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {departments.map((dep) => (
-                          <SelectItem key={dep} value={dep}>
-                            {dep}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {errors.department && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {errors.department.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2 w-1/2">
-                    <Label htmlFor="position" className="text-blue-950">
-                      Jabatan *
-                    </Label>
-                    <Select
-                      onValueChange={(value) => setValue("position", value)}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Pilih jabatan" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {positions.map((pos) => (
-                          <SelectItem key={pos} value={pos}>
-                            {pos}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {errors.position && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {errors.position.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <Label htmlFor="password" className="text-blue-950">

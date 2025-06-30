@@ -3,26 +3,18 @@
 import { ColumnDef } from "@tanstack/react-table";
 import ActionsAccount from "./actions";
 import { Badge } from "@/components/ui/badge";
-import { Verified } from "lucide-react";
 
 export type ColumnAccounts = {
   id: string;
-  fullname: number;
   email: string;
   role: string;
-  phone: string;
-  department: string;
-  position: string;
+
   isVerified: boolean;
 };
 
 export const getColumns = (
   refetch: () => void
 ): ColumnDef<ColumnAccounts>[] => [
-  {
-    accessorKey: "fullname",
-    header: "Nama Lengkap ",
-  },
   {
     accessorKey: "email",
     header: "Email",
@@ -31,18 +23,7 @@ export const getColumns = (
     accessorKey: "role",
     header: "Role",
   },
-  {
-    accessorKey: "phone",
-    header: "Nomor Telepon",
-  },
-  {
-    accessorKey: "department",
-    header: "Departemen",
-  },
-  {
-    accessorKey: "position",
-    header: "Jabatan",
-  },
+
   {
     id: "id",
     header: "Status",

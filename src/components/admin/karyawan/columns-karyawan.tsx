@@ -42,7 +42,7 @@ export const getColumns = (
     header: "Aksi",
     cell: ({ row }) => (
       <>
-        <ActionsKaryawan />
+        <ActionsKaryawan Id={row.original.id} refetch={refetch} />
       </>
     ),
   },

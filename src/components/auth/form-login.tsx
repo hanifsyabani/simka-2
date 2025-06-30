@@ -48,9 +48,11 @@ export default function FormLogin() {
         text: "Selamat datang di Sistem Manajemen Kantor",
       });
 
-      if (role === "admin") {
+      if (role === "ADMIN") {
         router.push("/admin");
-      } else {
+      } else if(role === "KARYAWAN") {
+        router.push("/karyawan");
+      } else{
         router.push("/dashboard");
       }
     },

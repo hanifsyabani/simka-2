@@ -44,6 +44,7 @@ import {
 } from "../ui/collapsible";
 
 import { getMenuItems } from "@/lib/items";
+import Image from "next/image";
 
 export default function SidebarAdmin() {
   const pathname = usePathname();
@@ -54,8 +55,8 @@ export default function SidebarAdmin() {
     <Sidebar side="left">
       <SidebarContent className="py-5 px-2 h-full bg-blue-950 ">
         <Link href={`/admin`} className="flex items-center gap-2">
-          {/* <Image src={'/logo.png'} width={30} height={30} alt={'logo'} className="w-20"/> */}
-          <h1 className="text-xl font-bold text-white">SIMKA</h1>
+          <Image src={'/logo.png'} width={100} height={100} alt={'logo'} className="w-14"/>
+          <h1 className="text-xl font-bold text-white">Koperasi Simka</h1>
         </Link>
 
         <SidebarGroup>

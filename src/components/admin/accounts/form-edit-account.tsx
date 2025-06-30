@@ -42,7 +42,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const schema = z.object({
-  fullname: z.string().min(1, "Nama lengkap harus diisi"),
   email: z.string().email("Email tidak valid").min(1, "Email harus diisi"),
   role: z.enum(["employee", "admin"], {
     errorMap: () => ({ message: "Role harus dipilih" }),
@@ -90,26 +89,20 @@ export default function FormEditAccount({ id }: { id: string }) {
   } = useForm<FormFields>({
     resolver: zodResolver(schema),
     defaultValues: {
-      fullname: "",
       email: "",
-
       role: "employee",
     },
   });
 
-  // Populate form when data is loaded
   useEffect(() => {
     if (dataAccount?.data?.user && !isLoadingAccount) {
       const user = dataAccount.data.user;
 
-      setValue("fullname", user.fullname || "");
       setValue("email", user.email || "");
-
       setValue("role", user.role === "admin" ? "admin" : "employee");
 
       setTimeout(() => {
         reset({
-          fullname: user.fullname || "",
           email: user.email || "",
           role: user.role === "admin" ? "admin" : "employee",
         });

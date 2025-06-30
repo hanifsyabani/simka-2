@@ -14,6 +14,8 @@ import {
   Users,
   FileText,
   Settings,
+  Wallet2,
+  Banknote,
 } from "lucide-react";
 
 export const departments = [
@@ -121,6 +123,18 @@ export const getMenuItems = (pathname: string) => {
           isActive: pathname === "/admin/tunjangan",
         },
       ],
+    },
+    {
+      title: "Pinjaman",
+      url: `/admin/pinjaman`,
+      icon: Wallet2,
+      isActive: pathname === "/admin/pinjaman",
+    },
+    {
+      title: "Simpanan",
+      url: `/admin/simpanan`,
+      icon: Banknote,
+      isActive: pathname === "/admin/simpanan",
     },
     {
       title: "Gaji",
